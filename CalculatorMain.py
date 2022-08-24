@@ -202,46 +202,45 @@ def numberButtonClick(myButton):
     if myButton == decimalButton:
         calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
     else:
-        # If the input is decimal
+        # If the input is float
         if "." in calculatorStatement:
             calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
             return
-        # If integer and not decimal
+        # If integer and not float
         calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
         calculatorInputViewBottomLabel['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
 
 def operatorButtonClick(myButton):
-    storedValue = []
-    # If current value is empty
+    storedValue = [] # Topview label value
+
+    # calculatorStatement = current value
     if not calculatorStatement:
-        if '0' in calculatorStatement: # set currentVal 0 when storedVal is 0
-            calculatorStatement.append('0')
+
+        if '0' in calculatorStatement:
+            calculatorStatement.append('0') # set default value
         else: # set current value from stored value
             calculatorStatement.append(re.findall(r'\d+', calculatorInputViewTopLabel['text'])[0])
 
     # Set current value wether float or int
     if "." in calculatorInputViewBottomLabel['text']:
-        print("Float")
         currentValue = float(''.join(calculatorInputViewBottomLabel['text']))
     else:
-        print("Integer")
         currentValue = int(''.join(calculatorStatement))
 
     # Set the stored value wether float or int
     if "." in calculatorInputViewTopLabel['text']:
-        n = re.findall('\d+\.\d+', calculatorInputViewTopLabel['text'])[0]
-        storedValue.append(float(n))
+        value = re.findall('\d+\.\d+', calculatorInputViewTopLabel['text'])[0]
+        storedValue.append(float(value))
     else:
-        for n in calculatorInputViewTopLabel['text'].split():
-            if n.isdigit():
-                storedValue.append(int(n))
+        value = re.findall(r'\d+', calculatorInputViewTopLabel['text'])[0]
+        storedValue.append(int(value))
 
-   # print(re.findall(r'\d+', calculatorInputViewTopLabel['text']))
-
-    print(storedValue, currentValue)
-
+    # If not the default value (0)
     if storedValue[0] != 0:
-        if myButton['text'] == addButton['text']:
+        if myButton['text'] == percentageButton['text']:
+            pass
+
+        elif myButton['text'] == addButton['text']:
             currentValue = storedValue[0] + currentValue
             calculatorInputViewTopLabel['text'] = str(currentValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = str(currentValue)
@@ -268,15 +267,30 @@ def operatorButtonClick(myButton):
 
         if len(calculatorInputViewBottomLabel['text']) >= 10:
             calculatorInputViewBottomLabel['font'] = (font + " Bold", fontSize - 1)
-        else:
-            print(myButton['text'])
 
+    # If stored value is 0
     else:
-        # Transfer the value to top view and set the operator
+        # Transfer current value to stored value and set operator
         calculatorInputViewTopLabel['text'] = ''.join(calculatorStatement) + " " + myButton['text']
         calculatorInputViewBottomLabel['text'] = str(currentValue)
 
-    # When transfered, clear the list
+    # Clear entry
+    if myButton['text'] == clearEntryButton['text']:
+        calculatorInputViewBottomLabel['text'] = '0'
+        calculatorStatement.clear()
+        return
+
+    elif myButton['text'] == clearButton['text']:
+        calculatorInputViewBottomLabel['text'] = '0'
+        calculatorInputViewTopLabel['text'] = '0'
+        calculatorStatement.clear()
+        storedValue.clear()
+        return
+
+    elif myButton['text'] == removeOneNumberButton['text']:
+        pass
+
+    # When transfered, clear the current value
     calculatorStatement.clear()
 
 # Button Hover
