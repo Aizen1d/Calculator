@@ -264,17 +264,17 @@ def operatorButtonClick(myButton):
 
         elif myButton['text'] == addButton['text']:
             resultValue = storedValue[0] + currentValue
-            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == subtractButton['text']:
             resultValue = storedValue[0] - currentValue
-            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == multiplyButton['text']:
             resultValue = storedValue[0] * currentValue
-            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == divideButton['text']:
@@ -284,7 +284,7 @@ def operatorButtonClick(myButton):
             if resultValue % 1 == 0:
                 resultValue = int(resultValue)
 
-            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
     # If stored value is 0
