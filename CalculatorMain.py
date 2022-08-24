@@ -187,26 +187,49 @@ numberButtons = [numberSevenButton, numberEightButton, numberNineButton, numberF
                  numberSixButton, numberOneButton, numberTwoButton, numberThreeButton, numberZeroButton,
                  plusOverMinusButton, decimalButton]
 
+# manipulate comma, float or int, font size
+def formatResultValue(value):
+    # convert to wether int or float
+    if value % 1 == 0:
+        value = "{:,}".format(int(str(value)))
+    else:
+        value = "{:,}".format(float(str(value)))
+
+    # compress size
+    if len(str(value)) < 10:
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
+    elif len(str(value)) >= 10:
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 8))
+
+    return str(value)
+
 # Number Button Click
 def numberButtonClick(myButton):
-    # Insert the button value in list
     value = myButton['text']
+
+    # prevent multiple decimal in input
+    if value == "." and "." in calculatorStatement:
+        return
     calculatorStatement.append(value)
 
-    # Check if more than equal 10 numbers
-    if len(calculatorInputViewBottomLabel['text']) >= 10:
-        #calculatorInputViewBottomLabel['font'] = (font + " Bold", fontSize - 1)
-        calculatorInputViewBottomLabel.configure(font = (font + " Bold", fontSize + 7))
+    # check if more than equal 10 numbers
+    if len(calculatorInputViewBottomLabel['text']) < 10:
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
+    elif len(calculatorInputViewBottomLabel['text']) >= 10:
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 8))
 
-    # Value setter
+    # if decimal button clicked
     if myButton == decimalButton:
         calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
+
+    # if not decimal
     else:
-        # If the input is float
-        if "." in calculatorStatement:
+        if "." in calculatorStatement: # if the input is float
             calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
+            calculatorInputViewBottomLabel['text'] = "{:,}".format(float(calculatorInputViewBottomLabel['text']))
             return
-        # If integer and not float
+
+        # if integer and not float
         calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
         calculatorInputViewBottomLabel['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
 
@@ -215,7 +238,6 @@ def operatorButtonClick(myButton):
 
     # calculatorStatement = current value
     if not calculatorStatement:
-
         if '0' in calculatorStatement:
             calculatorStatement.append('0') # set default value
         else: # set current value from stored value
@@ -223,7 +245,7 @@ def operatorButtonClick(myButton):
 
     # Set current value wether float or int
     if "." in calculatorInputViewBottomLabel['text']:
-        currentValue = float(''.join(calculatorInputViewBottomLabel['text']))
+        currentValue = float(''.join(calculatorStatement))
     else:
         currentValue = int(''.join(calculatorStatement))
 
@@ -241,48 +263,50 @@ def operatorButtonClick(myButton):
             pass
 
         elif myButton['text'] == addButton['text']:
-            currentValue = storedValue[0] + currentValue
-            calculatorInputViewTopLabel['text'] = str(currentValue) + " " + myButton['text']
-            calculatorInputViewBottomLabel['text'] = str(currentValue)
+            resultValue = storedValue[0] + currentValue
+            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == subtractButton['text']:
-            currentValue = storedValue[0] - currentValue
-            calculatorInputViewTopLabel['text'] = str(currentValue) + " " + myButton['text']
-            calculatorInputViewBottomLabel['text'] = str(currentValue)
+            resultValue = storedValue[0] - currentValue
+            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == multiplyButton['text']:
-            currentValue = storedValue[0] * currentValue
-            calculatorInputViewTopLabel['text'] = str(currentValue) + " " + myButton['text']
-            calculatorInputViewBottomLabel['text'] = str(currentValue)
+            resultValue = storedValue[0] * currentValue
+            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == divideButton['text']:
-            currentValue = storedValue[0] / currentValue
+            resultValue = storedValue[0] / currentValue
 
             # If the result is not float
-            if currentValue % 1 == 0:
-                currentValue = int(currentValue)
+            if resultValue % 1 == 0:
+                resultValue = int(resultValue)
 
-            calculatorInputViewTopLabel['text'] = str(currentValue) + " " + myButton['text']
-            calculatorInputViewBottomLabel['text'] = str(currentValue)
-
-        if len(calculatorInputViewBottomLabel['text']) >= 10:
-            calculatorInputViewBottomLabel['font'] = (font + " Bold", fontSize - 1)
+            calculatorInputViewTopLabel['text'] = formatResultValue(resultValue) + " " + myButton['text']
+            calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
     # If stored value is 0
     else:
+        if myButton['text'] == clearEntryButton['text']:
+            calculatorInputViewBottomLabel['text'] = str(currentValue)
         # Transfer current value to stored value and set operator
-        calculatorInputViewTopLabel['text'] = ''.join(calculatorStatement) + " " + myButton['text']
-        calculatorInputViewBottomLabel['text'] = str(currentValue)
+        else:
+            calculatorInputViewTopLabel['text'] = ''.join(calculatorStatement) + " " + myButton['text']
+            calculatorInputViewBottomLabel['text'] = str(currentValue)
 
     # Clear entry
     if myButton['text'] == clearEntryButton['text']:
         calculatorInputViewBottomLabel['text'] = '0'
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
         calculatorStatement.clear()
         return
 
     elif myButton['text'] == clearButton['text']:
         calculatorInputViewBottomLabel['text'] = '0'
         calculatorInputViewTopLabel['text'] = '0'
+        calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
         calculatorStatement.clear()
         storedValue.clear()
         return
