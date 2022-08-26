@@ -235,6 +235,7 @@ def numberButtonClick(myButton):
 
 def operatorButtonClick(myButton):
     storedValue = [] # Topview label value
+    operatorsWithNoDisplay = [removeOneNumberButton]
 
     # calculatorStatement = current value
     if not calculatorStatement:
@@ -243,13 +244,13 @@ def operatorButtonClick(myButton):
         else: # set current value from stored value
             calculatorStatement.append(re.findall(r'\d+', calculatorInputViewTopLabel['text'])[0])
 
-    # Set current value wether float or int
+    # This is responsible for setting current value datatype (float or int)
     if "." in calculatorInputViewBottomLabel['text']:
         currentValue = float(''.join(calculatorStatement))
     else:
         currentValue = int(''.join(calculatorStatement))
 
-    # Set the stored value wether float or int
+    # This is responsible for setting stored value datatype (float or int)
     if "." in calculatorInputViewTopLabel['text']:
         value = re.findall('\d+\.\d+', calculatorInputViewTopLabel['text'])[0]
         storedValue.append(float(value))
@@ -293,8 +294,11 @@ def operatorButtonClick(myButton):
             calculatorInputViewBottomLabel['text'] = str(currentValue)
         # Transfer current value to stored value and set operator
         else:
-            calculatorInputViewTopLabel['text'] = ''.join(calculatorStatement) + " " + myButton['text']
-            calculatorInputViewBottomLabel['text'] = str(currentValue)
+            if not myButton in operatorsWithNoDisplay:
+                calculatorInputViewTopLabel['text'] = ''.join(calculatorStatement) + " " + myButton['text']
+                calculatorInputViewBottomLabel['text'] = formatResultValue(currentValue)
+            else:
+                calculatorInputViewBottomLabel['text'] = formatResultValue(currentValue)
 
     # Clear entry
     if myButton['text'] == clearEntryButton['text']:
