@@ -301,7 +301,7 @@ def operatorButtonClick(myButton):
         calculatorInputViewBottomLabel['text'] = '0'
         calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
         calculatorStatement.clear()
-        return
+        #return
 
     elif myButton['text'] == clearButton['text']:
         calculatorInputViewBottomLabel['text'] = '0'
@@ -309,13 +309,26 @@ def operatorButtonClick(myButton):
         calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
         calculatorStatement.clear()
         storedValue.clear()
-        return
+        #return
 
     elif myButton['text'] == removeOneNumberButton['text']:
-        pass
+
+        if len(calculatorStatement) == 1:
+            calculatorStatement.remove(calculatorStatement[-1])
+            calculatorInputViewBottomLabel['text'] = '0'
+            return
+
+        elif len(calculatorStatement) == 0:
+            return
+
+        calculatorStatement.remove(calculatorStatement[-1])
+        calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
+        calculatorInputViewBottomLabel['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
+        #return
 
     # When transfered, clear the current value
-    calculatorStatement.clear()
+    else:
+        calculatorStatement.clear()
 
 # Button Hover
 def buttonHoverEnter(myButton, color):
