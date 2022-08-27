@@ -203,6 +203,12 @@ def formatResultValue(value):
 
     return str(value)
 
+def arrangeCalculatorStatement(value):
+    calculatorStatement.remove(calculatorStatement[0])
+
+    for number in str(value):
+        calculatorStatement.append(str(number))
+
 # Number Button Click
 def numberButtonClick(myButton):
     value = myButton['text']
@@ -243,6 +249,7 @@ def operatorButtonClick(myButton):
             calculatorStatement.append('0') # set default value
         else: # set current value from stored value
             calculatorStatement.append(re.findall(r'\d+', calculatorInputViewTopLabel['text'])[0])
+            arrangeCalculatorStatement(calculatorStatement[0])
 
     # This is responsible for setting current value datatype (float or int)
     if "." in calculatorInputViewBottomLabel['text']:
@@ -276,6 +283,7 @@ def operatorButtonClick(myButton):
         elif myButton['text'] == multiplyButton['text']:
             resultValue = storedValue[0] * currentValue
             calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
+            #arrangeCalculatorStatement(resultValue)
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
 
         elif myButton['text'] == divideButton['text']:
@@ -307,14 +315,15 @@ def operatorButtonClick(myButton):
         calculatorStatement.clear()
         #return
 
+    # Clear all
     elif myButton['text'] == clearButton['text']:
         calculatorInputViewBottomLabel['text'] = '0'
         calculatorInputViewTopLabel['text'] = '0'
         calculatorInputViewBottomLabel.configure(font=(font + " Bold", fontSize + 20))
         calculatorStatement.clear()
         storedValue.clear()
-        #return
 
+    # Clear one number
     elif myButton['text'] == removeOneNumberButton['text']:
 
         if len(calculatorStatement) == 1:
@@ -328,7 +337,6 @@ def operatorButtonClick(myButton):
         calculatorStatement.remove(calculatorStatement[-1])
         calculatorInputViewBottomLabel['text'] = ''.join(calculatorStatement)
         calculatorInputViewBottomLabel['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
-        #return
 
     # When transfered, clear the current value
     else:
