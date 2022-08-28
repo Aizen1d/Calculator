@@ -189,8 +189,14 @@ numberButtons = [numberSevenButton, numberEightButton, numberNineButton, numberF
 
 # Set wether int or float
 def setDataType(myObject, value):
+
     if float(value) % 1 == 0:
-        myObject['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
+        if float(value) <= 0.0:
+            myObject['text'] = "0"
+            calculatorStatement.clear()
+            calculatorStatement.append('0')
+        else:
+            myObject['text'] = "{:,}".format(int(calculatorInputViewBottomLabel['text']))
     else:
         myObject['text'] = "{:,}".format(float(calculatorInputViewBottomLabel['text']))
 
@@ -265,6 +271,10 @@ def operatorButtonClick(myButton):
                               squareNumberButton,
                               squareRootNumberButton] # Operators not to be displayed on the output
 
+    if calculatorInputViewBottomLabel['text'] == '0':
+        calculatorStatement.clear()
+        calculatorStatement.append('0')
+
     # When current value has no value
     if not calculatorStatement: # calculatorStatement = current value
 
@@ -285,6 +295,7 @@ def operatorButtonClick(myButton):
     if "." in calculatorInputViewBottomLabel['text']:
         currentValue = float(''.join(calculatorStatement))
     else:
+        print(calculatorStatement)
         currentValue = int(''.join(calculatorStatement))
 
     # This is responsible for setting STORED value datatype (float or int)
@@ -297,23 +308,26 @@ def operatorButtonClick(myButton):
 
     # This is responsible for calculating two numbers, otherwise go to else
     if storedValue[0] != 0:
-        if myButton['text'] == percentageButton['text']:
-            pass
-
-        elif myButton['text'] == addButton['text']:
+        if myButton['text'] == addButton['text']:
             resultValue = storedValue[0] + currentValue
             calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
+            appendNumbersToCalculatorStatement()
+            return
 
         elif myButton['text'] == subtractButton['text']:
             resultValue = storedValue[0] - currentValue
             calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
+            appendNumbersToCalculatorStatement()
+            return
 
         elif myButton['text'] == multiplyButton['text']:
             resultValue = storedValue[0] * currentValue
             calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
+            appendNumbersToCalculatorStatement()
+            return
 
         elif myButton['text'] == divideButton['text']:
             resultValue = storedValue[0] / currentValue
@@ -324,6 +338,8 @@ def operatorButtonClick(myButton):
 
             calculatorInputViewTopLabel['text'] = str(resultValue) + " " + myButton['text']
             calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
+            appendNumbersToCalculatorStatement()
+            return
 
         elif myButton['text'] == equalButton['text']:
             pass
@@ -357,6 +373,7 @@ def operatorButtonClick(myButton):
 
     # Clear one number
     elif myButton['text'] == removeOneNumberButton['text']:
+        appendNumbersToCalculatorStatement()
 
         # When deleting float value and reached decimal
         if len(calculatorStatement) >= 2:
@@ -378,6 +395,7 @@ def operatorButtonClick(myButton):
 
         # Set if float or int
         setDataType(calculatorInputViewBottomLabel, calculatorInputViewBottomLabel['text'])
+        appendNumbersToCalculatorStatement()
 
     elif myButton['text'] == squareRootNumberButton['text']:
         resultValue = math.sqrt(currentValue)
@@ -386,7 +404,6 @@ def operatorButtonClick(myButton):
 
         # Clear and append the numbers in current value
         appendNumbersToCalculatorStatement()
-        print(calculatorStatement)
 
     elif myButton['text'] == squareNumberButton['text']:
         resultValue = math.pow(currentValue, 2)
@@ -395,7 +412,18 @@ def operatorButtonClick(myButton):
 
         # Clear and append the numbers in current value
         appendNumbersToCalculatorStatement()
-        print(calculatorStatement)
+
+    elif myButton['text'] == oneDivideNumberButton['text']:
+        resultValue = 1 / currentValue
+
+        # If the result is not float, otherwise continue float answer from resultValue
+        if resultValue % 1 == 0:
+            resultValue = int(resultValue)
+
+        calculatorInputViewTopLabel['text'] = "1/(" + str(currentValue) + ")"
+        calculatorInputViewBottomLabel['text'] = formatResultValue(resultValue)
+
+        appendNumbersToCalculatorStatement()
 
     # When transferred, clear the current value
     else:
